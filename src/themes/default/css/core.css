@@ -1,0 +1,61 @@
+body {
+    margin: 0;
+    color: #c9d1d9;
+    font-family: BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji;
+    background-color: #282828;
+}
+
+p {
+    margin: 0;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.container {
+    max-width: 1320px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+nav.main {
+    width: 100%;
+    background-color:#333333;
+}
+
+nav.main > div.container {
+    display: flex;
+}
+
+nav.main > div.container a {
+    display: inline-block;
+    padding: 16px;
+}
+
+nav.main > div.container .profile {
+    margin-left: auto;
+}
+
+ul.tab-links {
+    list-style: none;
+    padding: 0;
+}
+
+ul.tab-links li {
+    transition: 0.2s;
+}
+
+ul.tab-links li a {
+    display: block;
+    padding: 6px;
+}
+
+ul.tab-links li.active, ul.tab-links li:hover {
+    color: white;
+}
+
+ul.tab-links li.active {
+    background-color: #0f0f0f;
+}
