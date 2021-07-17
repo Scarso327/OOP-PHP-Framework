@@ -17,8 +17,10 @@ class Login extends \System\Classes\Controller {
             exit;
         }
 
-        \System\Views\Output::I()->IncludeFile("login.php", "accounts", array(
-            "token" => \System\Session::I()->CRSF()
+        \System\Views\Output::I()->IncludeView("login", "accounts", array(
+            "loginurl" => \System\Auth\Login::LoginURL(),
+            "token" => \System\Session::I()->CRSF(),
+            "handlers" => \System\Auth\Login::GetHandlers()
         ));
 
         $this->Finish();

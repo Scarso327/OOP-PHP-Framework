@@ -10,7 +10,11 @@ require_once "../Init.php";
 if (\System\Requests\Incoming::I()->style) {
     header("Content-type: text/css");
 
-    echo file_get_contents(ROOT . "themes" . DIRECTORY_SEPARATOR . \System\Requests\Incoming::I()->theme . DIRECTORY_SEPARATOR . "css" . DIRECTORY_SEPARATOR . \System\Requests\Incoming::I()->style . ".css");
+    $app = \System\Requests\Incoming::I()->app;
+
+    $css = (new \System\Views\Theme(\System\Requests\Incoming::I()->theme))->GetCSS(($app) ? $app : "", \System\Requests\Incoming::I()->style);
+
+    echo ($css) ? $css : "";
     exit;
 }
 

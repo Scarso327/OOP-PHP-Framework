@@ -25,7 +25,7 @@ class Settings extends \System\Classes\Controller {
         $tab = (array_key_exists(1, $this->app->system->params)) ? $this->app->system->params[1] : "general";
 
         \System\Views\Output::I()->IncludeCSS("main", "settings");
-        \System\Views\Output::I()->IncludeFile("settings.php", "accounts", array(
+        \System\Views\Output::I()->IncludeView("settings", "accounts", array(
             "token" => \System\Session::I()->CRSF(),
             "tab" => $tab,
             "page" => $this->GetTabContent(strtolower($tab)),

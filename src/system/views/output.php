@@ -11,60 +11,38 @@ class Output {
         return self::$instance;
     }
 
-    public $themes = array();
-    private $theme = "default"; // TODO : Add ability for variants on themes so you don't need 2 themes just for a dark mode...
+    private $theme;
 
-    private $files = array();
+    private $views = array();
 
     // TODO : Compile this so we can have scss at runtime etc...
     private $css = array(
-        "core"
+        array("app" => "core", "css" => "core")
     );
 
     public function __construct() {
         ob_start();
 
-        // Get all themes...
-        if (!is_dir(ROOT . "themes")) {
-            new \System\Errors\Error("500");
-            exit;
-        }
-
-        // Loops through the directory /themes and if it has a theme.php file we add it to our array...
-        // TODO : Link to database so we can semi-ignore files and maybe even allow themes to "share" html / css...
-        foreach (scandir(ROOT . "themes") as $file) {
-            if ($file === '.' || $file === '..') continue;
-
-            $dir = ROOT . "themes" . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR;
-
-            if (is_file($dir . "theme.php")){
-                $theme = require_once $dir . "theme.php";
-                $theme["dir"] = $dir;
-                
-                $this->themes[strtolower($theme["name"])] = $theme;
-            }
-        }
+        $this->theme = new Theme(1);
     }
 
-    public function IncludeFile($file, $app = "", $data = null) {
-        array_push($this->files, array (
-            "file" => "html" . DIRECTORY_SEPARATOR . $app . DIRECTORY_SEPARATOR . $file,
+    public function IncludeView($file, $app = "", $data = null) {
+        array_push($this->views, array (
+            "view" => array("app" => $app, "view" => $file),
             "data" => $data
         ));
     }
 
     public function IncludeCSS($file, $app = null) {
-        array_push($this->css, (($app) ? $app . DIRECTORY_SEPARATOR : "") . $file);
+        array_push($this->css, array("app" => ($app) ? $app : "", "css" => $file));
     }
 
     public function Error($contents) {
         \System\Page::SetTitle($contents["error"]);
 
-        ob_end_clean();
+        $this->views = array(); // Wipe includes...
 
-        $this->files = array(); // Wipe includes...
-
-        $this->IncludeFile("error.php", "", $contents);
+        $this->IncludeView("error", "core", $contents);
         $this->Render();
 
         exit;
@@ -83,23 +61,28 @@ class Output {
         Header("Location: " . $url);
     }
 
-    public function Render($headers = null, $useTemplate = true, $template = "template.php") {
-        $css = $this->GetCSS();
+    public function Render($headers = null, $useTemplate = true, $template = "template") {
+        ob_end_clean();
 
-        foreach ($this->files as $file) {
-            if ($file["data"]) {
-                foreach ($file["data"] as $key => $value) {
-                    $this->{$key} = $value;
-                }
-            }
+        $output = "";
 
-            include $this->ThemeDirectory() . $file["file"];
+        foreach ($this->views as $view) {
+            $output = $output . $this->theme->CompileView($this->theme->GetView($view["view"]["app"], $view["view"]["view"]), $view["data"]);
         }
 
         if ($useTemplate) {
-            $content = ob_get_clean(); // We're using a template so just yeet the content from the buffer and into the template...
-            include_once $this->ThemeDirectory() . "html" . DIRECTORY_SEPARATOR . $template;
+            $output = $this->theme->CompileView($this->theme->GetView("core", $template), array(
+                "base" => URL,
+                "page" => $output,
+                "title" => \System\Page::Title(),
+                "name" => \System\Config::GetDynamic("site-name"),
+                "css" => $this->GetCSS()
+            ));
         }
+
+        $output = ltrim($output);
+
+        print $output;
 
         @ob_end_flush();
         @flush();
@@ -111,14 +94,10 @@ class Output {
     public function GetCSS() {
         $css = "";
 
-        foreach ($this->css as $file) {
-            $css = $css . "<link rel=\"stylesheet\" href=\"" . URL . "?theme=$this->theme&style=$file\" type=\"text/css\"/>";
+        foreach ($this->css as $style) {
+            $css = $css . "<link rel=\"stylesheet\" href=\"" . URL . "?theme=" . $this->theme->id . "&app=" . $style["app"] . "&style=" . $style["css"] ."\" type=\"text/css\"/>";
         }
 
         return $css;
-    }
-
-    private function ThemeDirectory() {
-        return $this->themes[$this->theme]["dir"];
     }
 }

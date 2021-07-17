@@ -1,8 +1,0 @@
-#settingsBody {
-    display: grid;
-    grid-template-columns: 25% 75%;
-}
-
-#settingsBody > div {
-    margin-left: 12px;
-}
