@@ -11,8 +11,8 @@ class Cookie extends Request {
         $this->data = $_COOKIE;
     }
 
-    public function SetCookie($name, $value, $expiry = null) {
-        if (setcookie($name, $value, (($expiry) ? $expiry : 0), "/", URL_DOMAIN, URL_PROTOCOL == "https://", false) === true)
+    public function SetCookie($name, $value, $expiry = null, $path = "/") {
+        if (setcookie($name, $value, (($expiry) ? $expiry : 0), $path, URL_DOMAIN, URL_PROTOCOL == "https://", false) === true)
 		{
 			$this->data[$name] = $value;
 			return true;
