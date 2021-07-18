@@ -45,21 +45,6 @@ CREATE TABLE IF NOT EXISTS `accounts_roles` (
 /*!40000 ALTER TABLE `accounts_roles` DISABLE KEYS */;
 /*!40000 ALTER TABLE `accounts_roles` ENABLE KEYS */;
 
--- Dumping structure for table forumboard.admin_applets
-CREATE TABLE IF NOT EXISTS `admin_applets` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `app` varchar(50) NOT NULL,
-  `controller` varchar(50) NOT NULL DEFAULT '''''',
-  `function` varchar(50) NOT NULL DEFAULT '''''',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
-
--- Dumping data for table forumboard.admin_applets: ~0 rows (approximately)
-/*!40000 ALTER TABLE `admin_applets` DISABLE KEYS */;
-INSERT INTO `admin_applets` (`id`, `app`, `controller`, `function`) VALUES
-	(1, 'core', 'dashboard', '');
-/*!40000 ALTER TABLE `admin_applets` ENABLE KEYS */;
-
 -- Dumping structure for table forumboard.login_account_links
 CREATE TABLE IF NOT EXISTS `login_account_links` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
