@@ -21,22 +21,26 @@ class Admin extends \System\Classes\Controller {
             \System\Views\Output::I()->params["base"] = URL . "admin";
             \System\Views\Output::I()->css["admin"] = array("app" => "admin", "css" => "core");
 
-            $this->GetApplets(); // Build Sidebar...
+            if (\System\Permissions\Role::HasPermission(\System\Session::I()->member->GetRoles(), "core", "access_admin")) {
+                $this->GetApplets(); // Build Sidebar...
 
-            $application = ($this->system->controller == null || $this->system->controller == "") ? "core" : $this->system->controller;
-            $controller = ($this->system->params == null || !array_key_exists(2, $this->system->params)) ? "dashboard" : $this->system->params[2];
-            $function = ($this->system->params == null || !array_key_exists(3, $this->system->params)) ? "" : $this->system->params[3];
+                $application = ($this->system->controller == null || $this->system->controller == "") ? "core" : $this->system->controller;
+                $controller = ($this->system->params == null || !array_key_exists(2, $this->system->params)) ? "dashboard" : $this->system->params[2];
+                $function = ($this->system->params == null || !array_key_exists(3, $this->system->params)) ? "" : $this->system->params[3];
 
-            \System\Views\Output::I()->params["current_app"] = $application;
-            \System\Views\Output::I()->params["current_controller"] = $controller;
+                \System\Views\Output::I()->params["current_app"] = $application;
+                \System\Views\Output::I()->params["current_controller"] = $controller;
 
-            if (file_exists(ROOT . "/applications/" . $application . "/admin/" . $controller . "/controller.php")) {
-                $class = "Applications\\" . $application . "\\Admin\\" . $controller . "\\controller";
-                $controller = new $class($this);
+                if (file_exists(ROOT . "/applications/" . $application . "/admin/" . $controller . "/controller.php")) {
+                    $class = "Applications\\" . $application . "\\Admin\\" . $controller . "\\controller";
+                    $controller = new $class($this);
 
-                // TODO : Call Function in controller if set...
+                    // TODO : Call Function in controller if set...
+                } else {
+                    new \System\Errors\Error("404");
+                }
             } else {
-                new \System\Errors\Error("404");
+                new \System\Errors\Error("401", "You don't have access to the admin panel.</br>Contact the server owner if you believe this to be a mistake.");
             }
         } else {
             new \Applications\Controllers\Core\Login($this); // Create Login Page...

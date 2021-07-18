@@ -2,7 +2,9 @@
 
 namespace System\Members;
 
-class Member {
+use System\Permissions\Role;
+
+class Member extends \System\Structures\DBEntity {
 
     const VALID_FIELDS = array( "id", "name" );
 
@@ -28,35 +30,15 @@ class Member {
     private static function CreateMember($id) {
         $member = new Member();
 
-        if ($id) $member->Load($id);
+        if ($id) $member->Query($id);
 
         return $member;
     }
 
-    protected $data = array();
-
-    public function Load($id) {
-        if ($this->id) return false; // Already loaded...
-
-        $info = \System\DB::I()->Query("* FROM accounts WHERE id = :id AND active = '1' LIMIT 1", array(
+    public function Query($id) {
+        return $this->Load("* FROM accounts WHERE id = :id AND active = '1' LIMIT 1", array(
             ":id" => $id
-        ), false);
-
-        if (!$info) return false; // Fail to query...
-
-        foreach ($info as $field => $value) {
-            $this->data[$field] = $value;
-        }
-
-        return true;
-    }
-
-    public function __get($key) {
-        return (isset($this->data[$key])) ? $this->data[$key] : null;
-    }
-
-    public function __set($key, $value) {
-        $this->data[$key] = $value;
+        ));
     }
 
     public function CheckLoginToken($compare) {
@@ -79,6 +61,41 @@ class Member {
             ":id" => $this->id,
             ":handler_id" => $handler_id
         ), false);
+    }
+
+    public function GetRoles($as_object = false) {
+        $roles = \System\DB::I()->Query("roles.id FROM roles INNER JOIN accounts_roles WHERE accounts_roles.account_id = :id AND accounts_roles.role_id = roles.id", array(
+            ":id" => $this->id
+        ));
+
+        if ($roles) {
+            $objects = array();
+
+            if ($as_object) {
+                foreach ($roles as $role) {
+                    $role = new Role($role->id);
+
+                    if ($role) {
+                        array_push($objects, $role);
+                    }
+                }
+            } else {
+                foreach ($roles as $role) {
+                    array_push($objects, $role->id);
+                }
+            }
+
+            $roles = $objects;
+        }
+
+        return $roles;
+    }
+
+    public function GiveRole($role_id) {
+        return \System\DB::I()->Insert("accounts_roles (account_id, role_id) VALUES (:id, :role_id)", array(
+            ":id" => $this->id,
+            ":role_id" => $role_id
+        ));
     }
 
     public function Save() {

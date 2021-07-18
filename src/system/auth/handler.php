@@ -23,12 +23,18 @@ class Handler {
         $member = new Member();
 
         if ($id) {
-            $member->Load($id);
+            $member->Query($id);
 
             if ($name) {
                 if (!Member::GetMember("name", $name)->id) {
                     $member->name = $name;
                 }
+            }
+
+            $default_role = \System\Config::GetDynamic("default-role");
+
+            if ($default_role) {
+                $member->GiveRole($default_role);
             }
 
             $member->Save();
