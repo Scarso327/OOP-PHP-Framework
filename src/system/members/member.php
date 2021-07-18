@@ -7,7 +7,7 @@ class Member {
     const VALID_FIELDS = array( "id", "name" );
 
     public static function GetMemberFromToken($handler_id, $token) {
-        $result = \System\DB::I()->Query("login_accounts.id as `id` FROM login_accounts INNER JOIN login_account_links WHERE login_accounts.id = login_account_links.account_id AND login_account_links.handler_id = :handler AND login_account_links.token = :token AND login_account_links.active = '1' AND login_accounts.active = '1'", array(
+        $result = \System\DB::I()->Query("accounts.id as `id` FROM accounts INNER JOIN login_account_links WHERE accounts.id = login_account_links.account_id AND login_account_links.handler_id = :handler AND login_account_links.token = :token AND login_account_links.active = '1' AND accounts.active = '1'", array(
             ":handler" => $handler_id,
             ":token" => $token
         ), false);
@@ -18,7 +18,7 @@ class Member {
     public static function GetMember($field, $value) {
         if (!in_array($field, self::VALID_FIELDS)) return null;
         
-        $result = \System\DB::I()->Query("id FROM login_accounts WHERE ".$field." = :value AND active = '1' LIMIT 1", array(
+        $result = \System\DB::I()->Query("id FROM accounts WHERE ".$field." = :value AND active = '1' LIMIT 1", array(
             ":value" => $value
         ), false);
 
@@ -38,7 +38,7 @@ class Member {
     public function Load($id) {
         if ($this->id) return false; // Already loaded...
 
-        $info = \System\DB::I()->Query("* FROM login_accounts WHERE id = :id AND active = '1' LIMIT 1", array(
+        $info = \System\DB::I()->Query("* FROM accounts WHERE id = :id AND active = '1' LIMIT 1", array(
             ":id" => $id
         ), false);
 
@@ -66,7 +66,7 @@ class Member {
     public function LoginToken() {
         $this->login_token = substr(bin2hex(random_bytes(32)), 0, 32);
 
-        \System\DB::I()->Update("login_accounts SET login_token = :token WHERE id = :id", array(
+        \System\DB::I()->Update("accounts SET login_token = :token WHERE id = :id", array(
             ":id" => $this->id,
             ":token" => $this->login_token
         ));
@@ -96,7 +96,7 @@ class Member {
                 $params[":".$field] = $value;
             }
 
-            \System\DB::I()->Update("login_accounts SET" . $fields. " WHERE id = " . $this->id, $params);
+            \System\DB::I()->Update("accounts SET" . $fields. " WHERE id = " . $this->id, $params);
         }
     }
 }

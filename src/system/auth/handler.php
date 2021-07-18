@@ -16,7 +16,7 @@ class Handler {
     public function Process() { return null; }
 
     protected function CreateAccount($name, $email) {
-        $id = \System\DB::I()->Insert("login_accounts () VALUES ()", array(
+        $id = \System\DB::I()->Insert("accounts () VALUES ()", array(
             ":name" => $name
         ));
         

@@ -81,7 +81,7 @@ class Steam extends \System\Auth\Handler {
                 ":account" => $member->id,
                 ":token" => $this->token
             ))) {
-                \System\DB::I()->Delete("login_accounts", "id = :id", array (":id" => $member->id));
+                \System\DB::I()->Delete("accounts", "id = :id", array (":id" => $member->id));
                 throw new Exception("Failed To Link Accounts");
             }
         }

@@ -17,8 +17,8 @@
 CREATE DATABASE IF NOT EXISTS `forumboard` /*!40100 DEFAULT CHARACTER SET latin1 */;
 USE `forumboard`;
 
--- Dumping structure for table forumboard.login_accounts
-CREATE TABLE IF NOT EXISTS `login_accounts` (
+-- Dumping structure for table forumboard.accounts
+CREATE TABLE IF NOT EXISTS `accounts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL DEFAULT '',
   `login_token` text NOT NULL,
@@ -27,9 +27,9 @@ CREATE TABLE IF NOT EXISTS `login_accounts` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
--- Dumping data for table forumboard.login_accounts: ~2 rows (approximately)
-/*!40000 ALTER TABLE `login_accounts` DISABLE KEYS */;
-/*!40000 ALTER TABLE `login_accounts` ENABLE KEYS */;
+-- Dumping data for table forumboard.accounts: ~2 rows (approximately)
+/*!40000 ALTER TABLE `accounts` DISABLE KEYS */;
+/*!40000 ALTER TABLE `accounts` ENABLE KEYS */;
 
 -- Dumping structure for table forumboard.login_account_links
 CREATE TABLE IF NOT EXISTS `login_account_links` (
@@ -40,9 +40,9 @@ CREATE TABLE IF NOT EXISTS `login_account_links` (
   `active` tinyint(4) NOT NULL DEFAULT 1,
   PRIMARY KEY (`id`),
   KEY `FK__login_handlers` (`handler_id`),
-  KEY `FK_login_account_links_login_accounts` (`account_id`),
+  KEY `FK_login_account_links_accounts` (`account_id`),
   CONSTRAINT `FK__login_handlers` FOREIGN KEY (`handler_id`) REFERENCES `login_handlers` (`id`),
-  CONSTRAINT `FK_login_account_links_login_accounts` FOREIGN KEY (`account_id`) REFERENCES `login_accounts` (`id`)
+  CONSTRAINT `FK_login_account_links_accounts` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- Dumping data for table forumboard.login_account_links: ~0 rows (approximately)
@@ -57,8 +57,8 @@ CREATE TABLE IF NOT EXISTS `login_devices` (
   `login_token` text NOT NULL,
   `active` tinyint(4) NOT NULL DEFAULT 1,
   PRIMARY KEY (`id`) USING BTREE,
-  KEY `FK_login_devices_login_accounts` (`account_id`) USING BTREE,
-  CONSTRAINT `FK_login_devices_login_accounts` FOREIGN KEY (`account_id`) REFERENCES `login_accounts` (`id`)
+  KEY `FK_login_devices_accounts` (`account_id`) USING BTREE,
+  CONSTRAINT `FK_login_devices_accounts` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- Dumping data for table forumboard.login_devices: ~4 rows (approximately)
