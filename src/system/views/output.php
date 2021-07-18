@@ -12,18 +12,25 @@ class Output {
     }
 
     private $theme;
+    public $params;
 
     private $views = array();
 
     // TODO : Compile this so we can have scss at runtime etc...
-    private $css = array(
-        array("app" => "core", "css" => "core")
+    public $css = array(
+        "main" => array("app" => "core", "css" => "core"),
+        "nav" => array("app" => "core", "css" => "navigation")
     );
 
     public function __construct() {
         ob_start();
 
         $this->theme = new Theme(1);
+
+        $this->params = array(
+            "base" => URL,
+            "name" => \System\Config::GetDynamic("site-name")
+        );
     }
 
     public function IncludeView($file, $app = "", $data = null) {
@@ -43,7 +50,7 @@ class Output {
         $this->views = array(); // Wipe includes...
 
         $this->IncludeView("error", "core", $contents);
-        $this->Render();
+        $this->Render(null, true, (\System\Admin\Admin::$mode == \System\Admin\Admin::IN_ADMIN) ? array("admin", "template") : array("core", "template"));
 
         exit;
     }
@@ -61,7 +68,7 @@ class Output {
         Header("Location: " . $url);
     }
 
-    public function Render($headers = null, $useTemplate = true, $template = "template") {
+    public function Render($headers = null, $useTemplate = true, $template = array("core", "template")) {
         ob_end_clean();
 
         $output = "";
@@ -71,13 +78,14 @@ class Output {
         }
 
         if ($useTemplate) {
-            $output = $this->theme->CompileView($this->theme->GetView("core", $template), array(
-                "base" => URL,
-                "page" => $output,
-                "title" => \System\Page::Title(),
-                "name" => \System\Config::GetDynamic("site-name"),
-                "css" => $this->GetCSS()
-            ));
+            if (!array_key_exists("page", $this->params)) {
+                $this->params["page"] = $output;
+            }
+
+            $this->params["title"] = \System\Page::Title();
+            $this->params["css"] = $this->GetCSS();
+
+            $output = $this->theme->CompileView(call_user_func_array(array($this->theme, "GetView"), $template), $this->params);
         }
 
         $output = ltrim($output);

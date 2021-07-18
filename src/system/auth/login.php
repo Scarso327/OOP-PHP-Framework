@@ -24,6 +24,10 @@ class Login {
         return false;
     }
 
+    public static function LoginURL() {
+        return URL . ((\System\Admin\Admin::$mode == \System\Admin\Admin::IN_ADMIN) ? CONSTANTS["admin"] : "login");
+    }
+
     private $id;
     private $handler;
 
@@ -90,7 +94,7 @@ class Login {
             \System\Requests\Cookie::I()->SetCookie("loggedIn", 1);
         }
 
-        \System\Views\Output::I()->Redirect(URL);
+        \System\Views\Output::I()->Redirect((\System\Admin\Admin::$mode == \System\Admin\Admin::IN_ADMIN) ? URL . CONSTANTS["admin"] : URL);
         exit;
     }
 }

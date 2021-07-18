@@ -4,6 +4,7 @@ namespace System\Classes;
 
 class Controller {
     public $app = null;
+    protected $template = array("core", "template");
 
     public function __construct($app) {
         $this->app = $app;
@@ -15,6 +16,6 @@ class Controller {
     }
 
     public function Finish() {
-        \System\Views\Output::I()->Render();
+        call_user_func_array(array(\System\Views\Output::I(), "Render"), array(null, true, $this->template));
     }
 }

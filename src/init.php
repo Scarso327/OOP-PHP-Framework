@@ -6,7 +6,7 @@ define('URL_DOMAIN', $_SERVER['HTTP_HOST']);
 define('URL', URL_PROTOCOL . URL_DOMAIN . '/');
 
 // Misc
-DEFINE("SYS_APPS", array("core"));
+$sys_apps = array("core");
 
 // Autoloader!
 spl_autoload_register(function ($class) {
@@ -38,3 +38,10 @@ if (CONSTANTS["database"]) {
         define(strtoupper("DB_".$key), $setting);
     }
 }
+
+// Admin Dir...
+if (array_key_exists("admin", CONSTANTS)) {
+    array_push($sys_apps, CONSTANTS["admin"]);
+}
+
+DEFINE("SYS_APPS", $sys_apps);

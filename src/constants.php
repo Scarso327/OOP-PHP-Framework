@@ -7,6 +7,7 @@ return array(
         "user" => "root",
         "pass" => "",
         "charset" => "utf8"
-    )
+    ),
+    "admin" => "admin" // Admin directory...
 );
 ?>

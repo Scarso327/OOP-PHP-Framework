@@ -23,6 +23,7 @@ class Login extends \System\Classes\Controller {
             "handlers" => \System\Auth\Login::GetHandlers()
         ));
 
+        $this->template = (\System\Admin\Admin::$mode == \System\Admin\Admin::IN_ADMIN) ? array("admin", "template") : $this->template;
         $this->Finish();
     }
 }

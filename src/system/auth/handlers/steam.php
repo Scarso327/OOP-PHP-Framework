@@ -29,7 +29,7 @@ class Steam extends \System\Auth\Handler {
             \System\Views\Output::I()->Redirect(self::AuthURL(), array(
                 "openid.ns" => "http://specs.openid.net/auth/2.0",
                 "openid.mode" => "checkid_setup",
-                "openid.return_to" => URL."login?_loginHandler=" . $this->id,
+                "openid.return_to" => \System\Auth\Login::LoginURL() ."?_loginHandler=" . $this->id,
                 "openid.realm" => URL,
                 "openid.identity" => "http://specs.openid.net/auth/2.0/identifier_select",
                 "openid.claimed_id" => "http://specs.openid.net/auth/2.0/identifier_select"

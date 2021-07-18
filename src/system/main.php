@@ -7,6 +7,8 @@ use System\Views\Output;
 
 class Main {
 
+    public $application;
+    public $controller;
     public $params = array();
     public static $page;
 
@@ -16,15 +18,15 @@ class Main {
 
         // Parse the URL for useful information...
 
-        $application = null;
-        $controller = null;
+        $this->application = null;
+        $this->controller = null;
 
         if (isset($_GET['url'])) {
             $url = trim($_GET['url'], '/');
             $url = filter_var($url, FILTER_SANITIZE_URL);
             $url = explode('/', $url);
-            $application = isset($url[0]) ? $url[0] : $application;
-            $controller = isset($url[1]) ? $url[1] : $controller;
+            $this->application = isset($url[0]) ? $url[0] : $this->application;
+            $this->controller = isset($url[1]) ? $url[1] : $this->controller;
             $this->params = array_values($url);
             unset($this->params[0]);
         }
@@ -34,7 +36,7 @@ class Main {
             if (Session::I()->IsLoggedIn()) {
                 // If our name is null then we need to set one...
                 if (!Session::I()->member->name) {
-                    if ($application != "settings" || $controller != "name") {
+                    if ($this->application != "settings" || $this->controller != "name") {
                         Output::I()->Redirect(URL."settings/name", array(
                             "name-taken" => 1
                         ));
@@ -45,22 +47,27 @@ class Main {
             }
         }
 
-        if (in_array(strtolower($application), SYS_APPS)) {
-            new Errors\Error("404");
+        if (in_array(strtolower($this->application), SYS_APPS)) {
+            // Admin directory, the constant allows it to be semi-hidden.
+            if ($this->application == CONSTANTS["admin"]) {
+                new Admin\Admin($this);
+            } else {
+                new Errors\Error("404");
+            }
         } else {
             // Load default application if nothing provided...
-            if ($application == null) {
-                $application = Config::GetDynamic("default-app", "");;
+            if ($this->application == null) {
+                $this->application = Config::GetDynamic("default-app", "");;
             }
 
             // If the application var is a controller within the Core application, load that above all else...
-            if (class_exists("Applications\Controllers\Core\\" . $application, true)) {
-                $this->LoadApplication("Core")->LoadController($application, true);
+            if (class_exists("Applications\Controllers\Core\\" . $this->application, true)) {
+                $this->LoadApplication("Core")->LoadController($this->application, true);
             } else {
                 unset($this->params[1]);
 
-                if (file_exists(ROOT . "/applications/" . $application)) {
-                    $this->LoadApplication($application)->LoadController($controller, true);
+                if (file_exists(ROOT . "/applications/" . $this->application)) {
+                    $this->LoadApplication($this->application)->LoadController($this->controller, true);
                 } else {
                     new Errors\Error("404");
                 }
