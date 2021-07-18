@@ -41,6 +41,25 @@ CREATE TABLE IF NOT EXISTS `accounts_roles` (
   CONSTRAINT `FK_accounts_roles_roles` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+-- Dumping data for table forumboard.accounts_roles: ~1 rows (approximately)
+/*!40000 ALTER TABLE `accounts_roles` DISABLE KEYS */;
+/*!40000 ALTER TABLE `accounts_roles` ENABLE KEYS */;
+
+-- Dumping structure for table forumboard.admin_applets
+CREATE TABLE IF NOT EXISTS `admin_applets` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `app` varchar(50) NOT NULL,
+  `controller` varchar(50) NOT NULL DEFAULT '''''',
+  `function` varchar(50) NOT NULL DEFAULT '''''',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+
+-- Dumping data for table forumboard.admin_applets: ~0 rows (approximately)
+/*!40000 ALTER TABLE `admin_applets` DISABLE KEYS */;
+INSERT INTO `admin_applets` (`id`, `app`, `controller`, `function`) VALUES
+	(1, 'core', 'dashboard', '');
+/*!40000 ALTER TABLE `admin_applets` ENABLE KEYS */;
+
 -- Dumping structure for table forumboard.login_account_links
 CREATE TABLE IF NOT EXISTS `login_account_links` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -179,14 +198,15 @@ CREATE TABLE IF NOT EXISTS `themes_css` (
   PRIMARY KEY (`id`) USING BTREE,
   KEY `FK_themes_css_themes` (`theme_id`) USING BTREE,
   CONSTRAINT `FK_themes_css_themes` FOREIGN KEY (`theme_id`) REFERENCES `themes` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 
--- Dumping data for table forumboard.themes_css: ~2 rows (approximately)
 -- Dumping data for table forumboard.themes_css: ~5 rows (approximately)
 /*!40000 ALTER TABLE `themes_css` DISABLE KEYS */;
 INSERT INTO `themes_css` (`id`, `theme_id`, `app`, `view`, `content`) VALUES
 	(1, 1, 'core', 'core', 'body {\r\n    margin: 0;\r\n    color: #c9d1d9;\r\n    font-family: BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji;\r\n    background-color: #282828;\r\n}\r\n\r\np {\r\n    margin: 0;\r\n}\r\n\r\na {\r\n    color: inherit;\r\n    text-decoration: none;\r\n}\r\n\r\nmain.body {\r\n    min-height: calc(100vh - 53px); /* Height of browser view - navbar */\r\n}\r\n\r\n.container {\r\n    max-width: 1320px;\r\n    margin-left: auto;\r\n    margin-right: auto;\r\n}\r\n\r\n.centered-container {\r\n    display: flex;\r\n    align-items: center;\r\n    justify-content: center;\r\n}\r\n\r\n.rounded-box {\r\n    padding: 12px;\r\n    border-radius: 12px;\r\n    background-color:#333333;\r\n}'),
 	(2, 1, 'settings', 'main', '#settingsBody {\r\n    display: grid;\r\n    grid-template-columns: 25% 75%;\r\n}\r\n\r\n#settingsBody > div {\r\n    margin-left: 12px;\r\n}'),
+	(3, 1, 'settings', 'intergrations', '.linked-accounts > div > div > h3 {\r\n    margin: 0;\r\n}'),
+	(4, 1, 'admin', 'core', '.cols {\r\n    display: flex;\r\n}\r\n\r\n.cols > .sidebar {\r\n    max-width: 200px;\r\n    background-color: #2e2e2e;\r\n}\r\n\r\n.cols > main {\r\n    width: 100%;\r\n}\r\n\r\n.cols > .sidebar a {\r\n    display: block;\r\n    padding: 16px;\r\n    text-align: center;\r\n}\r\n\r\n.cols > .sidebar a.active {\r\n    color: white;\r\n    background: #282828;\r\n}'),
 	(5, 1, 'core', 'navigation', 'nav.main {\r\n    width: 100%;\r\n    background-color:#333333;\r\n}\r\n\r\nnav.main.no-container {\r\n    display: flex;\r\n}\r\n\r\nnav.main > div.container {\r\n    display: flex;\r\n}\r\n\r\nnav.main a {\r\n    display: inline-block;\r\n    padding: 16px;\r\n}\r\n\r\nnav.main .profile {\r\n    margin-left: auto;\r\n}\r\n\r\nul.tab-links {\r\n    list-style: none;\r\n    padding: 0;\r\n}\r\n\r\nul.tab-links li {\r\n    transition: 0.2s;\r\n}\r\n\r\nul.tab-links li a {\r\n    display: block;\r\n    padding: 6px;\r\n}\r\n\r\nul.tab-links li.active, ul.tab-links li:hover {\r\n    color: white;\r\n}\r\n\r\nul.tab-links li.active {\r\n    background-color: #0f0f0f;\r\n}');
 /*!40000 ALTER TABLE `themes_css` ENABLE KEYS */;
 
@@ -200,9 +220,9 @@ CREATE TABLE IF NOT EXISTS `themes_views` (
   PRIMARY KEY (`id`),
   KEY `FK_themes_views_themes` (`theme_id`),
   CONSTRAINT `FK_themes_views_themes` FOREIGN KEY (`theme_id`) REFERENCES `themes` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 
--- Dumping data for table forumboard.themes_views: ~4 rows (approximately)
+-- Dumping data for table forumboard.themes_views: ~5 rows (approximately)
 /*!40000 ALTER TABLE `themes_views` DISABLE KEYS */;
 INSERT INTO `themes_views` (`id`, `theme_id`, `app`, `view`, `content`) VALUES
 	(1, 1, 'core', 'template', '<!DOCTYPE html>\r\n<html>\r\n    <head>\r\n        <base href="{$base}"></base>\r\n        <title>{$title} - {$name}</title>\r\n        <meta name="viewport" content="width=device-width, initial-scale=1">\r\n        {$css}\r\n    </head>\r\n    <body>\r\n        <nav class="main">\r\n            <div class="container">\r\n                <a href="/" >Home</a>\r\n                <div class="profile">\r\n                    {{if (\\System\\Session::I()->IsLoggedIn()) }}\r\n                        <a href="/settings">Settings</a><a href="/logout">Logout</a>\r\n                    {{else}}\r\n	     <a href="/login">Login</a>\r\n	 {{endif}}\r\n                </div>\r\n            </div>\r\n        </nav>\r\n        <main class="body">\r\n            <div class="container">\r\n               {$page}\r\n            </div>\r\n        </main>\r\n    </body>\r\n    <script> </script>\r\n</html>'),
