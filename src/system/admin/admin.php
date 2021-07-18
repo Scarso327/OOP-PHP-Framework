@@ -8,6 +8,11 @@ class Admin extends \System\Classes\Controller {
 
     public static $mode = self::NOT_IN_ADMIN;
 
+    // Returns if we have access to Admin CP...
+    public static function HasAccess() {
+        return \System\Permissions\Role::HasPermission(\System\Session::I()->member->GetRoles(), "core", "access_admin");
+    }
+
     private $system;
 
     public function __construct($system) {
@@ -21,7 +26,7 @@ class Admin extends \System\Classes\Controller {
             \System\Views\Output::I()->params["base"] = URL . "admin";
             \System\Views\Output::I()->css["admin"] = array("app" => "admin", "css" => "core");
 
-            if (\System\Permissions\Role::HasPermission(\System\Session::I()->member->GetRoles(), "core", "access_admin")) {
+            if ($this::HasAccess()) {
                 $this->GetApplets(); // Build Sidebar...
 
                 $application = ($this->system->controller == null || $this->system->controller == "") ? "core" : $this->system->controller;

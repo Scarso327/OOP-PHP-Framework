@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS `accounts` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
--- Dumping data for table forumboard.accounts: ~1 rows (approximately)
+-- Dumping data for table forumboard.accounts: ~0 rows (approximately)
 /*!40000 ALTER TABLE `accounts` DISABLE KEYS */;
 /*!40000 ALTER TABLE `accounts` ENABLE KEYS */;
 
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS `accounts_roles` (
   CONSTRAINT `FK_accounts_roles_roles` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
--- Dumping data for table forumboard.accounts_roles: ~1 rows (approximately)
+-- Dumping data for table forumboard.accounts_roles: ~0 rows (approximately)
 /*!40000 ALTER TABLE `accounts_roles` DISABLE KEYS */;
 /*!40000 ALTER TABLE `accounts_roles` ENABLE KEYS */;
 
@@ -169,8 +169,8 @@ INSERT INTO `settings` (`id`, `app`, `name`, `value`) VALUES
 	(1, '', 'default-app', 'core'),
 	(2, '', 'default-theme', '1'),
 	(3, 'core', 'site-name', 'Forum Board'),
-	(4, 'core', 'steam-api-key', '');
-  (5, 'core', 'default-role', '1');
+	(4, 'core', 'steam-api-key', ''),
+	(5, 'core', 'default-role', '1');
 /*!40000 ALTER TABLE `settings` ENABLE KEYS */;
 
 -- Dumping structure for table forumboard.themes
@@ -225,7 +225,7 @@ CREATE TABLE IF NOT EXISTS `themes_views` (
 -- Dumping data for table forumboard.themes_views: ~5 rows (approximately)
 /*!40000 ALTER TABLE `themes_views` DISABLE KEYS */;
 INSERT INTO `themes_views` (`id`, `theme_id`, `app`, `view`, `content`) VALUES
-	(1, 1, 'core', 'template', '<!DOCTYPE html>\r\n<html>\r\n    <head>\r\n        <base href="{$base}"></base>\r\n        <title>{$title} - {$name}</title>\r\n        <meta name="viewport" content="width=device-width, initial-scale=1">\r\n        {$css}\r\n    </head>\r\n    <body>\r\n        <nav class="main">\r\n            <div class="container">\r\n                <a href="/" >Home</a>\r\n                <div class="profile">\r\n                    {{if (\\System\\Session::I()->IsLoggedIn()) }}\r\n                        <a href="/settings">Settings</a><a href="/logout">Logout</a>\r\n                    {{else}}\r\n	     <a href="/login">Login</a>\r\n	 {{endif}}\r\n                </div>\r\n            </div>\r\n        </nav>\r\n        <main class="body">\r\n            <div class="container">\r\n               {$page}\r\n            </div>\r\n        </main>\r\n    </body>\r\n    <script> </script>\r\n</html>'),
+	(1, 1, 'core', 'template', '<!DOCTYPE html>\r\n<html>\r\n    <head>\r\n        <base href="{$base}"></base>\r\n        <title>{$title} - {$name}</title>\r\n        <meta name="viewport" content="width=device-width, initial-scale=1">\r\n        {$css}\r\n    </head>\r\n    <body>\r\n        <nav class="main">\r\n            <div class="container">\r\n                <a href="/" >Home</a>\r\n                <div class="profile">\r\n                    {{if (\\System\\Session::I()->IsLoggedIn()) }}\r\n                        {{if (\\System\\Admin\\Admin::HasAccess()) }}\r\n                            <a href="/{$admincpdir}">Admin CP</a>\r\n                        {{endif}}\r\n                        <a href="/settings">Settings</a>\r\n	      <a href="/logout">Logout</a>\r\n                    {{else}}\r\n	     <a href="/login">Login</a>\r\n	 {{endif}}\r\n                </div>\r\n            </div>\r\n        </nav>\r\n        <main class="body">\r\n            <div class="container">\r\n               {$page}\r\n            </div>\r\n        </main>\r\n    </body>\r\n    <script> </script>\r\n</html>'),
 	(2, 1, 'core', 'error', '<h3>Error {$error}</h3>\r\n<p>{$info}</p>'),
 	(3, 1, 'accounts', 'login', '<main class="body centered-container">\r\n    <div class="rounded-box">\r\n        <form accept-charset="utf8" method="post" action="{$loginurl}">\r\n            <input type="hidden" name="token" value="{$token}"/>\r\n            <div>\r\n                {{foreach $handlers as $handler}}\r\n                    <button type="submit" name="_loginHandler" value="{$handler->id}">Sign in with {$handler->name}</button>\r\n                {{endforeach}}\r\n            </div>\r\n        </form>\r\n    </div>\r\n</main>'),
 	(4, 1, 'accounts', 'settings', '<div>\r\n    <div>\r\n        <h1>Settings</h1>\r\n        <p>Manage your account settings, and set up 3rd party integrations.</p>\r\n    </div>\r\n    <div id="settingsBody">\r\n        <ul class="tab-links">\r\n            <li><a href="settings">Overview</a></li>\r\n            <li><a href="settings/name">Display Name</a></li>\r\n            <li><a href="settings/intergrations">Intergrations</a></li>\r\n        </ul>\r\n        <div>\r\n            <div>\r\n                <h2>Settings</h2>\r\n            </div>\r\n            {$page}\r\n        </div>\r\n    </div>\r\n</div>'),

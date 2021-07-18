@@ -29,7 +29,8 @@ class Output {
 
         $this->params = array(
             "base" => URL,
-            "name" => \System\Config::GetDynamic("site-name")
+            "name" => \System\Config::GetDynamic("site-name"),
+            "admincpdir" => CONSTANTS["admin"]
         );
     }
 
