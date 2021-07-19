@@ -35,12 +35,23 @@ class Admin extends \System\Classes\Controller {
 
                 \System\Views\Output::I()->params["current_app"] = $application;
                 \System\Views\Output::I()->params["current_controller"] = $controller;
+                \System\Views\Output::I()->params["current_function"] = $function;
 
                 if (file_exists(ROOT . "/applications/" . $application . "/admin/" . $controller . "/controller.php")) {
                     $class = "Applications\\" . $application . "\\Admin\\" . $controller . "\\controller";
                     $controller = new $class($this);
+                    
+                    if ($function == "") {
+                        $controller->Home();
+                    } else {
+                        if (method_exists($class, $function)) {
+                            $controller->{$function}();
+                        } else {
+                            new \System\Errors\Error("404");
+                        }
+                    }
 
-                    // TODO : Call Function in controller if set...
+                    $controller->finish();
                 } else {
                     new \System\Errors\Error("404");
                 }
