@@ -23,8 +23,11 @@ CREATE TABLE IF NOT EXISTS `accounts` (
   `name` varchar(50) NOT NULL DEFAULT '',
   `login_token` text NOT NULL,
   `active` tinyint(4) NOT NULL DEFAULT 1,
+  `primary_role` int(11) DEFAULT NULL,
   `join_date` timestamp NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `FK_accounts_accounts_roles` (`primary_role`),
+  CONSTRAINT `FK_accounts_accounts_roles` FOREIGN KEY (`primary_role`) REFERENCES `accounts_roles` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- Dumping data for table forumboard.accounts: ~0 rows (approximately)
@@ -33,8 +36,10 @@ CREATE TABLE IF NOT EXISTS `accounts` (
 
 -- Dumping structure for table forumboard.accounts_roles
 CREATE TABLE IF NOT EXISTS `accounts_roles` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `account_id` int(11) DEFAULT NULL,
   `role_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
   KEY `FK_accounts_roles_accounts` (`account_id`),
   KEY `FK_accounts_roles_roles` (`role_id`),
   CONSTRAINT `FK_accounts_roles_accounts` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`),

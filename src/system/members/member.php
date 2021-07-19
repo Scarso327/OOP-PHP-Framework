@@ -98,6 +98,19 @@ class Member extends \System\Structures\DBEntity {
         ));
     }
 
+    public function PrimaryRole() {
+        $role = \System\DB::I()->Query("* FROM accounts_roles WHERE id = :role_id AND account_id = :id", array(
+            ":role_id" => $this->primary_role,
+            ":id" => $this->id
+        ), false);
+
+        if ($role) {
+            $role = new Role($role->role_id);
+        }
+
+        return $role;
+    }
+
     public function Save() {
         $total = count($this->data);
 

@@ -34,7 +34,7 @@ class Handler {
             $default_role = \System\Config::GetDynamic("default-role");
 
             if ($default_role) {
-                $member->GiveRole($default_role);
+                $member->primary_role = $member->GiveRole($default_role);
             }
 
             $member->Save();
