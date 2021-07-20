@@ -14,6 +14,8 @@ class Role extends \System\Structures\DBEntity {
             ":tag" => $tag
         ));
     }
+
+    public $association_id;
     
     public function __construct($id) {
         return $this->Load("* FROM roles WHERE id = :id LIMIT 1", array(

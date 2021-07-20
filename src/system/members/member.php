@@ -64,7 +64,7 @@ class Member extends \System\Structures\DBEntity {
     }
 
     public function GetRoles($as_object = false) {
-        $roles = \System\DB::I()->Query("roles.id FROM roles INNER JOIN accounts_roles WHERE accounts_roles.account_id = :id AND accounts_roles.role_id = roles.id", array(
+        $roles = \System\DB::I()->Query("accounts_roles.id as `account_role_id`, roles.id FROM roles INNER JOIN accounts_roles WHERE accounts_roles.account_id = :id AND accounts_roles.role_id = roles.id", array(
             ":id" => $this->id
         ));
 
@@ -73,10 +73,11 @@ class Member extends \System\Structures\DBEntity {
 
             if ($as_object) {
                 foreach ($roles as $role) {
-                    $role = new Role($role->id);
+                    $object = new Role($role->id);
+                    $object->association_id = $role->account_role_id;
 
                     if ($role) {
-                        array_push($objects, $role);
+                        array_push($objects, $object);
                     }
                 }
             } else {
@@ -105,7 +106,10 @@ class Member extends \System\Structures\DBEntity {
         ), false);
 
         if ($role) {
+            $id = $role->id;
+
             $role = new Role($role->role_id);
+            $role->association_id = $id;
         }
 
         return $role;
