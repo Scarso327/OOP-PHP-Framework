@@ -56,14 +56,18 @@ class Form {
         if (Incoming::I()->{$this->submitName}) {
             $submitType = Incoming::I()->{$this->submitName};
 
-            // Validate the inputs...
-            foreach ($this->elements as $element) {
-                if ($val = $element->Validate()) {
-                    $values[$element->name] = $val;
-                } else {
-                    $this->status = $this::STATUS_INCOMPLETE_FIELDS;
-                    return null; // Force Null...
+            if (count($this->elements) > 0) {
+                // Validate the inputs...
+                foreach ($this->elements as $element) {
+                    if ($val = $element->Validate()) {
+                        $values[$element->name] = $val;
+                    } else {
+                        $this->status = $this::STATUS_INCOMPLETE_FIELDS;
+                        return null; // Force Null...
+                    }
                 }
+            } else {
+                $values = true;
             }
 
             $this->status = $this::STATUS_SUBMITTED;
