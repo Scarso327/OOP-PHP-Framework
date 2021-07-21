@@ -5,6 +5,8 @@ namespace System;
 use PDOException;
 
 class DB extends \System\Structures\Instance {
+    protected static $instance;
+    
     private $connection;
 
     public function __construct()
