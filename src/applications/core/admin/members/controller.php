@@ -153,7 +153,11 @@ class Controller extends \System\Classes\AdminController {
 
             $start = ($page - 1) * $perPage;
 
-            $members = \System\DB::I()->Query("`id`, `name`, `join_date` FROM accounts WHERE active = '1' ORDER BY `join_date` LIMIT " . $start . ", " . ($start + $perPage));
+            $members = \System\DB::I()->Query("`id` FROM accounts WHERE active = '1' ORDER BY `join_date` LIMIT " . $start . ", " . ($start + $perPage));
+
+            foreach ($members as $key => $member) {
+                $members[$key] = \System\Members\Member::GetMember("id", $member->id);
+            }
 
             \System\Views\Output::I()->IncludeView("members_listview", "admin", array(
                 "members" => $members
