@@ -80,6 +80,8 @@ class Settings extends \System\Classes\Controller {
                 array_push($this->messages, "You didn't complete all the require fields...");
             }
         }
+
+        \System\Views\Output::I()->css["forms"] = array("app" => "core", "css" => "forms");
         
         return (string) $form;
     }

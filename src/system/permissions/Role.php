@@ -15,6 +15,10 @@ class Role extends \System\Structures\DBEntity {
         ));
     }
 
+    public static function GetRoles() {
+        return \System\DB::I()->Query("* FROM roles WHERE active = '1'");
+    }
+
     public $association_id;
     
     public function __construct($id) {

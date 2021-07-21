@@ -13,7 +13,7 @@ class Admin extends \System\Classes\Controller {
         return \System\Permissions\Role::HasPermission(\System\Session::I()->member->GetRoles(), "core", "access_admin");
     }
 
-    private $system;
+    public $system;
 
     public function __construct($system) {
         $this->system = $system;

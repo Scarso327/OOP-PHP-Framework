@@ -64,7 +64,7 @@ class Member extends \System\Structures\DBEntity {
     }
 
     public function GetRoles($as_object = false) {
-        $roles = \System\DB::I()->Query("accounts_roles.id as `account_role_id`, roles.id FROM roles INNER JOIN accounts_roles WHERE accounts_roles.account_id = :id AND accounts_roles.role_id = roles.id", array(
+        $roles = \System\DB::I()->Query("accounts_roles.id as `account_role_id`, roles.id FROM roles INNER JOIN accounts_roles WHERE accounts_roles.account_id = :id AND accounts_roles.role_id = roles.id AND accounts_roles.active = '1'", array(
             ":id" => $this->id
         ));
 
@@ -77,7 +77,7 @@ class Member extends \System\Structures\DBEntity {
                     $object->association_id = $role->account_role_id;
 
                     if ($role) {
-                        array_push($objects, $object);
+                        $objects[$object->id] = $object;
                     }
                 }
             } else {
@@ -99,8 +99,15 @@ class Member extends \System\Structures\DBEntity {
         ));
     }
 
+    public function RemoveRole($role_id) {
+        return \System\DB::I()->Delete("accounts_roles", "account_id = :account AND role_id = :role", array (
+            ":account" => $this->id,
+            ":role" => $role_id
+        ));
+    }
+
     public function PrimaryRole() {
-        $role = \System\DB::I()->Query("* FROM accounts_roles WHERE id = :role_id AND account_id = :id", array(
+        $role = \System\DB::I()->Query("* FROM accounts_roles WHERE id = :role_id AND account_id = :id AND active = '1'", array(
             ":role_id" => $this->primary_role,
             ":id" => $this->id
         ), false);

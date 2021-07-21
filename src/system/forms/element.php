@@ -8,8 +8,8 @@ abstract class Element {
 
     protected $type = "";
     public $name;
-    private $title;
-    private $default;
+    protected $title;
+    protected $default;
 
     public function __construct($name, $title, $default = null) {
         $this->name = $name;
@@ -17,7 +17,7 @@ abstract class Element {
         $this->default = $default;
     }
 
-    private function SubmittedValue() {
+    protected function SubmittedValue() {
         return Incoming::I()->{$this->name};
     }
 
@@ -25,7 +25,11 @@ abstract class Element {
         return $this->SubmittedValue();
     }
 
+    protected function Design($for, $innerHtml, $input) {
+        return "<label for=\"$for\">$innerHtml:</label> $input";
+    }
+
     public function __toString() {
-        return "<label for=\"$this->name\">$this->title:</label><input type=\"$this->type\" name=\"$this->name\" value=\"$this->default\"/>";
+        return $this->Design($this->name, $this->title, "<input type=\"$this->type\" name=\"$this->name\" value=\"$this->default\"/>");
     }
 }
