@@ -137,6 +137,7 @@ class Controller extends \System\Classes\AdminController {
                 \System\Views\Output::I()->css["members"] = array("app" => "core", "css" => "member");
                 \System\Views\Output::I()->css["lists"] = array("app" => "core", "css" => "lists");
                 \System\Views\Output::I()->css["forms"] = array("app" => "core", "css" => "forms");
+                \System\Views\Output::I()->css["modals"] = array("app" => "core", "css" => "modals");
             }
         } else {
             $page = 1;
