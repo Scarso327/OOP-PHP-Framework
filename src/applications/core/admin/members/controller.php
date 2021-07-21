@@ -53,45 +53,57 @@ class Controller extends \System\Classes\AdminController {
 
                             $primaryRoleId = $member->PrimaryRole()->association_id;
 
-                            $form = new Form("admin/core/members/home/$member->id/roles");
-                            $form->Add(new Select("primary_role", "Primary Role", $primaryRoleId, $primaryRoles));
+                            $form = new Form("admin/core/members/home/$member->id/roles?action=" . Incoming::I()->action);
+                            
+                            switch (Incoming::I()->action) {
+                                case "primary":
+                                    $form->Add(new Select("primary_role", "Primary Role", $primaryRoleId, $primaryRoles));
+                                    break;
+                                case "roles":
+                                    $roles = \System\Permissions\Role::GetRoles();
 
-                            $roles = \System\Permissions\Role::GetRoles();
+                                    $form->Add(new Label("secondary_roles[]", "Roles"));
 
-                            $form->Add(new Label("secondary_roles[]", "Roles"));
-
-                            foreach ($roles as $role) {
-                                $form->Add(new Checkbox("secondary_roles[]", $role->name, $role->id, isset($member_roles[$role->id])));
+                                    foreach ($roles as $role) {
+                                        $form->Add(new Checkbox("secondary_roles[]", $role->name, $role->id, isset($member_roles[$role->id])));
+                                    }
+                                    break;
+                                default:
+                                    new \System\Errors\Error("404", "This form requires an action to be provided...");
+                                    break;
                             }
 
                             $form->SetButtons("_save", array(new Button(1, "Save")));
 
                             if ($values = $form->Validate()) {
-                                $pRole = $values["primary_role"];
+                                switch (Incoming::I()->action) {
+                                    case "primary":
+                                        $pRole = $values["primary_role"];
 
-                                // Update Secondary Roles...
-                                $secondary_roles = $values["secondary_roles[]"];
-
-                                foreach ($roles as $role) {
-                                    if (in_array($role->id, $secondary_roles)) {
-                                        // The role has been "checked", if we don't have the role we'll add it now...
-                                        if (!isset($member_roles[$role->id])) {
-                                            $role->association_id = $member->GiveRole($role->id);
-                                            $member_roles[$role->id] = $role;
+                                        if ($pRole != $primaryRoleId) {
+                                            $member->primary_role = ($pRole == "-1" || !isset($member_roles[$role->id])) ? null : $pRole;
+                                            $member->Save();
                                         }
-                                    } else {
-                                        // This role has been "unchecked", if we currently have it. Remove it.
-                                        if (isset($member_roles[$role->id])) {
-                                            $member->RemoveRole($role->id);
-                                            unset($member_roles[$role->id]);
-                                        }
-                                    }
-                                }
+                                        break;
+                                    case "roles":
+                                        $secondary_roles = $values["secondary_roles[]"];
 
-                                // Update Primary Role...
-                                if ($pRole != $primaryRoleId) {
-                                    $member->primary_role = ($pRole == "-1" || !isset($member_roles[$role->id])) ? null : $pRole;
-                                    $member->Save();
+                                        foreach ($roles as $role) {
+                                            if (in_array($role->id, $secondary_roles)) {
+                                                // The role has been "checked", if we don't have the role we'll add it now...
+                                                if (!isset($member_roles[$role->id])) {
+                                                    $role->association_id = $member->GiveRole($role->id);
+                                                    $member_roles[$role->id] = $role;
+                                                }
+                                            } else {
+                                                // This role has been "unchecked", if we currently have it. Remove it.
+                                                if (isset($member_roles[$role->id])) {
+                                                    $member->RemoveRole($role->id);
+                                                    unset($member_roles[$role->id]);
+                                                }
+                                            }
+                                        }
+                                        break;
                                 }
 
                                 \System\Views\Output::I()->Redirect(URL . "/admin/core/members/home/$member->id");
