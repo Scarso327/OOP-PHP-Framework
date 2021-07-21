@@ -85,6 +85,7 @@ class Output {
 
             $this->params["title"] = \System\Page::Title();
             $this->params["css"] = $this->GetCSS();
+            $this->params["javascript"] = $this->GetJavaScript();
 
             $output = $this->theme->CompileView(call_user_func_array(array($this->theme, "GetView"), $template), $this->params);
         }
@@ -104,9 +105,22 @@ class Output {
         $css = "";
 
         foreach ($this->css as $style) {
-            $css = $css . "<link rel=\"stylesheet\" href=\"" . URL . "?theme=" . $this->theme->id . "&app=" . $style["app"] . "&style=" . $style["css"] ."\" type=\"text/css\"/>";
+            $css .= "<link rel=\"stylesheet\" href=\"" . URL . "?theme=" . $this->theme->id . "&app=" . $style["app"] . "&style=" . $style["css"] ."\" type=\"text/css\"/>";
         }
 
         return $css;
+    }
+
+    public function GetJavaScript() {
+        $java = "";
+        
+        foreach (Javascript::I()->javascript as $app_level) {
+            foreach ($app_level as $javascript) {
+                $src = ($javascript->link == 1) ? $javascript->script : URL . "?java&app=" . $javascript->app . "&java=" . $javascript->java;
+                $java .= "<script type=\"text/javascript\" src=\"$src\"></script>";
+            }
+        }
+
+        return $java;
     }
 }
