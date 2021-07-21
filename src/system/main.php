@@ -18,7 +18,7 @@ class Main {
         $this::$page = new Page();
 
         $this::$AJAX = (
-            isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strcasecmp($_SERVER['HTTP_X_REQUESTED_WITH'], 'xmlhttprequest') == 0
+            isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'
         );
 
         // Parse the URL for useful information...
