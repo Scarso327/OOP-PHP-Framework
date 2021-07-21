@@ -11,10 +11,15 @@ class Main {
     public $controller;
     public $params = array();
     public static $page;
+    public static $AJAX = false;
 
     public function __construct()
     {
         $this::$page = new Page();
+
+        $this::$AJAX = (
+            isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strcasecmp($_SERVER['HTTP_X_REQUESTED_WITH'], 'xmlhttprequest') == 0
+        );
 
         // Parse the URL for useful information...
 

@@ -75,10 +75,10 @@ class Output {
         $output = "";
 
         foreach ($this->views as $view) {
-            $output = $output . $this->theme->CompileView($this->theme->GetView($view["view"]["app"], $view["view"]["view"]), $view["data"]);
+            $output .= $this->theme->CompileView($this->theme->GetView($view["view"]["app"], $view["view"]["view"]), $view["data"]);
         }
 
-        if ($useTemplate) {
+        if ($useTemplate && !\System\Main::$AJAX) {
             if (!array_key_exists("page", $this->params)) {
                 $this->params["page"] = $output;
             }
@@ -88,6 +88,11 @@ class Output {
             $this->params["javascript"] = $this->GetJavaScript();
 
             $output = $this->theme->CompileView(call_user_func_array(array($this->theme, "GetView"), $template), $this->params);
+        } else {
+            // If no template but we've been passed a page param, append it...
+            if (array_key_exists("page", $this->params)) {
+                $output .= $this->params["page"];
+            }
         }
 
         $output = ltrim($output);
