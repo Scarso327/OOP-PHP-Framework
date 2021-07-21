@@ -4,9 +4,7 @@ namespace System;
 
 use PDOException;
 
-class DB {
-
-    protected static $instance;
+class DB extends \System\Structures\Instance {
     private $connection;
 
     public function __construct()
@@ -20,13 +18,6 @@ class DB {
             new \System\Errors\Error("500");
             die();
         }
-    }
-    
-    // Get instance...
-    public static function I() {
-        $instance = $instance ?? new DB();
-
-        return $instance;
     }
 
     private function ExecuteStatement($statement, $params) {

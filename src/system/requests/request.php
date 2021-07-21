@@ -2,15 +2,7 @@
 
 namespace System\Requests;
 
-class Request {
-    protected static $instance;
-
-    public static function I() {
-        $class = get_called_class();
-        static::$instance = static::$instance ?? new $class;
-        return static::$instance;
-    }
-
+class Request extends \System\Structures\Instance {
     protected $data = array();
 
     protected function Filter(&$value) {
