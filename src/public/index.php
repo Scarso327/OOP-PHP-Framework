@@ -1,10 +1,10 @@
 <?php
 
 // Directories...
-define("ROOT", dirname(__DIR__) . DIRECTORY_SEPARATOR);
-define("WEB", ROOT . 'public' . DIRECTORY_SEPARATOR);
+define("ROOT", realpath(dirname(__DIR__)));
+define("WEB", realpath(ROOT . DIRECTORY_SEPARATOR . 'public'));
 
-require_once "../Init.php";
+require_once (ROOT . DIRECTORY_SEPARATOR . "init.php");
 
 /*
  * Temp system for getting css and java from database
