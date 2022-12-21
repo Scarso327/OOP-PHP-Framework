@@ -9,7 +9,7 @@ class Role extends \System\Structures\DBEntity {
         
         $ids = implode("','", $ids);
 
-        return \System\DB::I()->Query("permissions_roles.* FROM permissions_roles INNER JOIN permissions ON permissions.id = permissions_roles.permission_id WHERE permissions.app = 'core' AND permissions.tag = 'access_admin' AND permissions_roles.role_id IN ('" . $ids . "')", array(
+        return \System\DB::I()->Query("permissions_roles.* FROM permissions_roles INNER JOIN permissions ON permissions.id = permissions_roles.permission_id WHERE permissions.app = :app AND permissions.tag = :tag AND permissions_roles.role_id IN ('" . $ids . "')", array(
             ":app" => $app,
             ":tag" => $tag
         ));

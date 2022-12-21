@@ -8,6 +8,7 @@ use System\Forms\Checkbox;
 use System\Forms\Form;
 use System\Forms\Select;
 use System\Forms\Label;
+use System\Structures\Pagination;
 
 class Controller extends \System\Classes\AdminController {
     public function Init()
@@ -111,6 +112,32 @@ class Controller extends \System\Classes\AdminController {
 
                             \System\Views\Output::I()->params["page"] = (string) $form;
                             break;
+                        case "delete":
+                            if ($member->IsProtected()) {
+                                \System\Views\Output::I()->params["page"] = "<p>You can't perform this action on this account as it's either your own or the main admin account.";
+                            } else {
+                                $form = new Form("admin/core/members/home/$member->id/delete");
+
+                                $form->Add(new Label("", "Confirmation"));
+                                $form->Add(new Label("", "Are you sure you want to delete user $member->name ($member->id)?"));
+
+                                $form->SetButtons("_confirm", array(
+                                    new Button(1, "Cancel"),
+                                    new Button(2, "Delete")
+                                ));
+
+                                if ($values = $form->Validate()) {
+                                    if ($form->submitType == "2") {
+                                        $member->active = 0;
+                                        $member->Save();
+                                    }
+
+                                    \System\Views\Output::I()->Redirect(URL . "/admin/core/members/home/");
+                                }
+
+                                \System\Views\Output::I()->params["page"] = (string) $form;
+                            }
+                            break;
                         default:
                             new \System\Errors\Error("404", "This action doesn't exist for this user... <a href=\"/admin/core/members/home/$member->id\">Return</a>");
                             break;
@@ -136,36 +163,24 @@ class Controller extends \System\Classes\AdminController {
 
                 \System\Views\Output::I()->css["members"] = array("app" => "core", "css" => "member");
                 \System\Views\Output::I()->css["lists"] = array("app" => "core", "css" => "lists");
-                \System\Views\Output::I()->css["forms"] = array("app" => "core", "css" => "forms");
-                \System\Views\Output::I()->css["modals"] = array("app" => "core", "css" => "modals");
             }
         } else {
-            $page = 1;
-            $perPage = 5;
+            $pagination = (new Pagination("accounts"))->Do("ORDER BY `join_date`");
 
-            // Attempted to use ?? and ? : but it didn't work...
-            if (Incoming::I()->page && is_numeric(Incoming::I()->page)) {
-                $page = Incoming::I()->page;
-            }
-
-            if (Incoming::I()->perPage && is_numeric(Incoming::I()->perPage)) {
-                $perPage = Incoming::I()->perPage;
-            }
-
-            $start = ($page - 1) * $perPage;
-
-            $members = \System\DB::I()->Query("`id` FROM accounts WHERE active = '1' ORDER BY `join_date` LIMIT " . $start . ", " . ($start + $perPage));
-
-            foreach ($members as $key => $member) {
-                $members[$key] = \System\Members\Member::GetMember("id", $member->id);
+            foreach ($pagination->results as $key => $member) {
+                $pagination->results[$key] = \System\Members\Member::GetMember("id", $member->id);
             }
 
             \System\Views\Output::I()->IncludeView("members_listview", "admin", array(
-                "members" => $members
+                "pagination" => $pagination
             ));
 
             \System\Views\Output::I()->css["table"] = array("app" => "core", "css" => "table");
+            \System\Views\Output::I()->css["pagination"] = array("app" => "core", "css" => "pagination");
         }
+
+        \System\Views\Output::I()->css["forms"] = array("app" => "core", "css" => "forms");
+        \System\Views\Output::I()->css["modals"] = array("app" => "core", "css" => "modals");
     }
 
     public function Roles() {

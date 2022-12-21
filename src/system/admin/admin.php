@@ -10,7 +10,7 @@ class Admin extends \System\Classes\Controller {
 
     // Returns if we have access to Admin CP...
     public static function HasAccess() {
-        return \System\Permissions\Role::HasPermission(\System\Session::I()->member->GetRoles(), "core", "access_admin");
+        return \System\Session::HasPermission("core", "access_admin");
     }
 
     public $system;
@@ -37,7 +37,7 @@ class Admin extends \System\Classes\Controller {
                 \System\Views\Output::I()->params["current_controller"] = $controller;
                 \System\Views\Output::I()->params["current_function"] = $function;
 
-                if (file_exists(ROOT . "/applications/" . $application . "/admin/" . $controller . "/controller.php")) {
+                if (file_exists(ROOT . DIRECTORY_SEPARATOR . "/applications/" . $application . "/admin/" . $controller . "/controller.php")) {
                     $class = "Applications\\" . $application . "\\Admin\\" . $controller . "\\controller";
                     $controller = new $class($this);
                     
@@ -66,10 +66,10 @@ class Admin extends \System\Classes\Controller {
     private function GetApplets() {
         $apps = array();
 
-        foreach (scandir(ROOT . "applications") as $file) {
+        foreach (scandir(ROOT . DIRECTORY_SEPARATOR . "applications") as $file) {
             if ($file === '.' || $file === '..') continue;
 
-            $dir = ROOT . "applications" . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . "admin";
+            $dir = ROOT . DIRECTORY_SEPARATOR . "applications" . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . "admin";
 
             if (file_exists($dir)){
                 foreach (scandir($dir) as $file) {

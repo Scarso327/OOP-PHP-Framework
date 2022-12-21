@@ -6,6 +6,7 @@ use System\Auth\Login;
 use System\Views\Output;
 
 class Main {
+    public static $system;
 
     public $application;
     public $controller;
@@ -15,6 +16,7 @@ class Main {
 
     public function __construct()
     {
+        $this::$system = $this;
         $this::$page = new Page();
 
         $this::$AJAX = (
@@ -71,7 +73,7 @@ class Main {
             } else {
                 unset($this->params[1]);
 
-                if (file_exists(ROOT . "/applications/" . $this->application)) {
+                if (file_exists(ROOT . DIRECTORY_SEPARATOR . "/applications/" . $this->application)) {
                     $this->LoadApplication($this->application)->LoadController($this->controller, true);
                 } else {
                     new Errors\Error("404");

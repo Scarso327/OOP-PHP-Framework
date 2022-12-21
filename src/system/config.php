@@ -13,4 +13,8 @@ class Config {
         if ($result) return $result->value;
         return false;
     }
+
+    public static function GetNavMenu() {
+        return DB::I()->Query("* FROM navigation WHERE published = '1'");
+    }
 }

@@ -11,6 +11,7 @@ class Form {
     const STATUS_INCOMPLETE_FIELDS = 2;
 
     public $status = self::STATUS_UNSUBMITTED;
+    public $submitType;
 
     // General Info
     private $action;
@@ -54,7 +55,7 @@ class Form {
         $values = null;
 
         if (Incoming::I()->{$this->submitName}) {
-            $submitType = Incoming::I()->{$this->submitName};
+            $this->submitType = Incoming::I()->{$this->submitName};
 
             if (count($this->elements) > 0) {
                 // Validate the inputs...

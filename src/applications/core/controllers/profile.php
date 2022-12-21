@@ -20,6 +20,8 @@ class Profile extends \System\Classes\Controller {
                 ));
 
                 \System\Views\Output::I()->css["profile"] = array("app" => "core", "css" => "profile");
+                \System\Views\Output::I()->css["columns"] = array("app" => "core", "css" => "columns");
+                \System\Views\Output::I()->css["members"] = array("app" => "core", "css" => "member");
 
                 $this->Finish();
                 exit;

@@ -83,6 +83,12 @@ class Output {
                 $this->params["page"] = $output;
             }
 
+            $this->params["page_data"] = (object) array(
+                "app" => \System\Main::$system->application,
+                "controller" => \System\Main::$system->controller,
+                "params" => \System\Main::$system->params
+            );
+
             $this->params["title"] = \System\Page::Title();
             $this->params["css"] = $this->GetCSS();
             $this->params["javascript"] = $this->GetJavaScript();

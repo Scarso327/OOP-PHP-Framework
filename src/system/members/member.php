@@ -3,6 +3,7 @@
 namespace System\Members;
 
 use System\Permissions\Role;
+use System\Session;
 
 class Member extends \System\Structures\DBEntity {
 
@@ -120,6 +121,11 @@ class Member extends \System\Structures\DBEntity {
         }
 
         return $role;
+    }
+
+    // If this is our account or is the original account, don't let certain actions take place...
+    public function IsProtected() {
+        return ($this->id == Session::I()->member->id) || $this->id == 1;
     }
 
     public function Save() {

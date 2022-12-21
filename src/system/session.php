@@ -26,6 +26,10 @@ class Session {
         return self::$session;
     }
 
+    public static function HasPermission($app, $perm) {
+        return \System\Permissions\Role::HasPermission(self::I()->member->GetRoles(), $app, $perm);
+    }
+
     public $id;
     
     private $token;
